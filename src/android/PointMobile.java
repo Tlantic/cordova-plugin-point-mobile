@@ -91,27 +91,33 @@ public class PointMobile extends CordovaPlugin {
         super.onDestroy();
     }
 
+    public void cancelDevice(boolean onDestroy) {
+        if (onDestroy) {
+            this.onDestroy();
+        }
+
+        if (this.callbackContext != null) {
+            PluginResult result = new PluginResult(PluginResult.Status.ERROR, "USER_CANCEL");
+            result.setKeepCallback(true);
+            this.callbackContext.sendPluginResult(result);
+            this.callbackContext = null;
+        }
+        mScanner.aDecodeSetTriggerOn(0);
+    }
+
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("scan")) {
             this.callbackContext = callbackContext;
             mScanner.aDecodeSetTriggerOn(1);
         } else if (action.equals("cancel")) {
-            this.onDestroy();
-
-            if (this.callbackContext != null) {
-                PluginResult result = new PluginResult(PluginResult.Status.ERROR, "USER_CANCEL");
-                result.setKeepCallback(true);
-                this.callbackContext.sendPluginResult(result);
-                this.callbackContext = null;
-            }
-
-            mScanner.aDecodeSetTriggerOn(0);
+            this.cancelDevice(true);
+        } else if (action.equals("cancel-pm85")) {
+            this.cancelDevice(false);
         } else {
             return false;
         }
 
         return true;
     }
-
 }

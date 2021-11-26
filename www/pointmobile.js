@@ -6,5 +6,8 @@ module.exports = {
     },
     cancel: function () {
         exec(null, null, 'PointMobile', 'cancel', []);
+    },
+    cancelPm85: function () {
+        exec(null, null, 'PointMobile', 'cancel-pm85', []);
     }
 };
